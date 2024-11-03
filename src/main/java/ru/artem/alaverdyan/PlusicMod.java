@@ -6,6 +6,7 @@ public class PlusicMod {
     private String name;
     private String author;
     private String version;
+    private String root;
 
     public PlusicMod() {
     }
@@ -44,6 +45,14 @@ public class PlusicMod {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRoot() {
+        return root;
+    }
+
+    public void setRoot(String root) {
+        this.root = root;
     }
 
     //public ArrayList<Mixin> getMixins() {

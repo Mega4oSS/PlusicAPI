@@ -74,6 +74,10 @@ public class PlusicInjector {
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins proceeded");
 
             newClazzez = new ArrayList<>();
+            newClazzez.add(new RegClazz(PlusicAPI.class, null));
+            newClazzez.add(new RegClazz(EConsole.class, null));
+            newClazzez.add(new RegClazz(PlusicMod.class, null));
+            newClazzez.add(new RegClazz(RegClazz.class, null));
             newClazzez.addAll(PlusicAPI.clazzez);
             newClazzez.add(new RegClazz(ClickAnimationPAPIT.class, null));
             newClazzez.add(new RegClazz(PlusicAPIText.class, null));
@@ -170,6 +174,15 @@ public class PlusicInjector {
                                 CtConstructor body = cc.getDeclaredConstructor(new CtClass[]{});
                                 String code = "menuElements.add(new ru.artem.alaverdyan.PlusicAPIText(this));";
                                 body.insertAt(510, code);
+                            } catch (NotFoundException | CannotCompileException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        if (cc.getSimpleName().equals("DesktopLauncher")) {
+                            try {
+                                CtMethod body = cc.getDeclaredMethod("main");
+                                String code = "ru.artem.alaverdyan.PlusicAPI.preInit();";
+                                body.insertAt(16, code);
                             } catch (NotFoundException | CannotCompileException e) {
                                 throw new RuntimeException(e);
                             }

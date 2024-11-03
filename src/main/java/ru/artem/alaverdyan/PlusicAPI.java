@@ -106,6 +106,7 @@ public class PlusicAPI {
                         mod.setName(name);
                         mod.setAuthor(author);
                         mod.setVersion(version);
+                        mod.setRoot(lst.get(i).getParentFile().getAbsolutePath());
                         mods.add(mod);
                         modPaths.add(lst.get(i).getAbsolutePath());
                         EConsole.write("");
@@ -204,6 +205,7 @@ public class PlusicAPI {
                         mod.setName(name);
                         mod.setAuthor(author);
                         mod.setVersion(version);
+                        mod.setRoot(lst.get(i).getParentFile().getAbsolutePath());
                         mods.add(mod);
                         modPaths.add(lst.get(i).getAbsolutePath());
                         EConsole.write("");
