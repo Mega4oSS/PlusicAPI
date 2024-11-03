@@ -89,11 +89,11 @@ public class PlusicInjector {
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiling game");
             createJar(outputDir, modifiedJarPath);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiled " + outputDir + ";" + modifiedJarPath);
-            //deleteDir(new File(outputDir));
+            deleteDir(new File(outputDir));
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Starting game");
             runJar(modifiedJarPath);
         } catch (Exception e) {
-            EConsole.writeStacktrace(e.getStackTrace());
+            EConsole.writeStacktrace(e.getCause(), e.getLocalizedMessage(), e.getStackTrace());
         }
     }
 
@@ -289,7 +289,7 @@ public class PlusicInjector {
 
             } catch (NotFoundException | IllegalAccessException | InvocationTargetException |
                      CannotCompileException e) {
-                EConsole.writeStacktrace(e.getStackTrace());
+                EConsole.writeStacktrace(e.getCause(), e.getLocalizedMessage(), e.getStackTrace());
                 throw new RuntimeException(e);
             }
 
@@ -343,7 +343,7 @@ public class PlusicInjector {
         try {
             process.waitFor(); // Подождите завершения процесса
         } catch (InterruptedException e) {
-            EConsole.writeStacktrace(e.getStackTrace());
+            EConsole.writeStacktrace(e.getCause(), e.getLocalizedMessage(), e.getStackTrace());
         }
     }
 

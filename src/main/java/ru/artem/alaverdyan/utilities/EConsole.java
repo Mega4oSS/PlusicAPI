@@ -73,7 +73,9 @@ public class EConsole {
         System.out.println(RESET); // Сбрасываем цвет после завершения строки
     }
 
-    public static void writeStacktrace(StackTraceElement[] stackTrace) {
+    public static void writeStacktrace(Throwable cause, String localizedMsg, StackTraceElement[] stackTrace) {
+        System.out.println(RED_BG + BLACK + localizedMsg + RESET);
+        System.out.println(RED_BG + BLACK + cause + RESET);
         for (int i = 0; i < stackTrace.length; i++) {
             System.out.println(RED_BG + BLACK + stackTrace[i].toString() + RESET);
         }
