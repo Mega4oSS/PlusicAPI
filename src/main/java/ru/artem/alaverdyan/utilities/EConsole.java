@@ -43,8 +43,6 @@ public class EConsole {
     private static final int DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
 
     public static void enableAnsi() {
-        WinDef.HWND hWnd = Kernel32.INSTANCE.GetConsoleWindow();
-
         int STD_OUTPUT_HANDLE = -11;
         WinNT.HANDLE hOut = Kernel32.INSTANCE.GetStdHandle(STD_OUTPUT_HANDLE);
 
