@@ -60,7 +60,10 @@ public class PlusicInjector {
             EConsole.write(EConsole.RED, "Version: 1.0.0");
             EConsole.write(EConsole.RED, "By Artem Alaverdyan aka Mega4oSS");
             EConsole.write("");
-
+            File dir = new File(outputDir);
+            if (dir.exists()) {
+                deleteDir(dir);
+            }
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracting: " + jarPath);
             extractJar(jarPath, outputDir);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracted to: " + outputDir);
@@ -81,7 +84,8 @@ public class PlusicInjector {
             newClazzez.addAll(PlusicAPI.clazzez);
             newClazzez.add(new RegClazz(ClickAnimationPAPIT.class, null));
             newClazzez.add(new RegClazz(PlusicAPIText.class, null));
-
+            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration log4j library...");
+            extractLib(outputDir);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration classes...");
             saveClassesToFiles(newClazzez, outputDir);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Classes registered");
@@ -98,6 +102,25 @@ public class PlusicInjector {
             runJar(modifiedJarPath);
         } catch (Exception e) {
             EConsole.writeStacktrace(e.getCause(), e.getLocalizedMessage(), e.getStackTrace());
+        }
+    }
+
+    private static void extractLib(String outputDir) throws IOException {
+        // Создание директории для извлечения классов
+        boolean created = new File(outputDir).mkdirs();
+        ProcessBuilder pb = new ProcessBuilder("jar", "xf", PlusicInjector.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "), "ch", "logback.xml", "org");
+        pb.directory(new File(outputDir));
+        pb.inheritIO();
+        if (created || new File(outputDir).exists()) {
+            Process process = pb.start();
+            try {
+                process.waitFor(); // Подождите завершения процесса
+            } catch (InterruptedException e) {
+                EConsole.write(EConsole.RED, e.getLocalizedMessage());
+                throw new RuntimeException(e);
+            }
+        } else {
+            EConsole.write(EConsole.RED, "[ERROR] Output directory not created, check permissions or idk.");
         }
     }
 
@@ -134,10 +157,6 @@ public class PlusicInjector {
     }
 
     private static void extractJar(String jarPath, String outputDir) throws IOException {
-        File dir = new File(outputDir);
-        if (dir.exists()) {
-            deleteDir(dir);
-        }
         // Создание директории для извлечения классов
         boolean created = new File(outputDir).mkdirs();
         ProcessBuilder pb = new ProcessBuilder("jar", "xf", jarPath);
