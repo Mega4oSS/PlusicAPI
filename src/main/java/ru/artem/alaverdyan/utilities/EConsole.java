@@ -2,6 +2,11 @@ package ru.artem.alaverdyan.utilities;
 
 import java.util.ArrayList;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.*;
+
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +14,7 @@ public class EConsole {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EConsole.class);
 
-    
+
     // ANSI-коды для цветов и атрибутов
     public static final String RESET = "\u001B[0m";
     public static final String BLACK = "\u001B[30m";
@@ -33,6 +38,22 @@ public class EConsole {
 
     // Жирный текст
     public static final String BOLD = "\u001B[1m";
+
+    private static final int ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0001;
+    private static final int DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
+
+    public static void enableAnsi() {
+        int STD_OUTPUT_HANDLE = -11;
+        WinNT.HANDLE hOut = Kernel32.INSTANCE.GetStdHandle(STD_OUTPUT_HANDLE);
+
+        int mode = ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+
+        try {
+            Kernel32.INSTANCE.SetConsoleMode(hOut, mode);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void write(String text) {
         System.out.println(text);
