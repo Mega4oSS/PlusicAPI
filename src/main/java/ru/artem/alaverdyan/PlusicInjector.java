@@ -232,24 +232,37 @@ public class PlusicInjector {
                                 afterMC = "return;";
                             }
                             if (!inject.method()[0].equals(cc.getSimpleName())) {
-                                CtMethod method = cc.getDeclaredMethod(inject.method()[0]);
+
+                                CtClass[] parameters = new CtClass[inject.constructorParameters().length];
+                                CtMethod method;
+                                if (parameters.length > 0) {
+                                    for (int icp = 0; icp < inject.constructorParameters().length; icp++) {
+                                        parameters[icp] = pool.get(inject.constructorParameters()[icp].getName());
+                                    }
+                                    method = cc.getDeclaredMethod(inject.method()[0], parameters);
+                                } else {
+                                    method = cc.getDeclaredMethod(inject.method()[0]);
+                                }
                                 CtMethod newMethod = new CtMethod(methodM, cc, null);
                                 String methodName = mixinClass.getMethods()[f].getName() + i;
                                 newMethod.setName(methodName);
                                 cc.addMethod(newMethod);
-
+                                String returnVariable = "";
+                                if(!inject.returnTo().to().isEmpty()) {
+                                    returnVariable = inject.returnTo().to() + " = ";
+                                }
                                 switch (inject.at()[0].value()) {
                                     case "AFTER":
-                                        method.insertAfter(methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
+                                        method.insertAfter(returnVariable + methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
                                         break;
                                     case "BEFORE":
-                                        method.insertBefore(methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
+                                        method.insertBefore(returnVariable + methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
                                         break;
                                     case "BY":
-                                        method.insertAt(inject.at()[0].by(), methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
+                                        method.insertAt(inject.at()[0].by(), returnVariable + methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
                                         break;
                                 }
-                                EConsole.write(EConsole.MAGENTA + EConsole.BOLD + "[Mixin|Injection] Injected method " + EConsole.RESET + EConsole.MAGENTA + methodName + "(" + joinParameterNames(parameterNames) + "); " + EConsole.RESET + EConsole.MAGENTA + EConsole.BOLD + "to " + EConsole.RESET + EConsole.MAGENTA + cc.getSimpleName() + "." + method.getName() + "()" + EConsole.RESET);
+                                EConsole.write(EConsole.MAGENTA + EConsole.BOLD + "[Mixin|Injection] Injected method " + EConsole.RESET + EConsole.MAGENTA + returnVariable + methodName + "(" + joinParameterNames(parameterNames) + "); " + EConsole.RESET + EConsole.MAGENTA + EConsole.BOLD + "to " + EConsole.RESET + EConsole.MAGENTA + cc.getSimpleName() + "." + method.getName() + "()" + EConsole.RESET);
                                 EConsole.write("");
                             } else {
                                 EConsole.write(EConsole.MAGENTA + EConsole.BOLD + "[Mixin|Injection] Injection " + mixinClass.getSimpleName() + "." + methodM.getName() + "()" + EConsole.RESET);
@@ -269,19 +282,22 @@ public class PlusicInjector {
                                 newMethod.setName(methodName);
                                 cc.addMethod(newMethod);
 
-
+                                String returnVariable = "";
+                                if(!inject.returnTo().to().isEmpty()) {
+                                    returnVariable = inject.returnTo().to() + " = ";
+                                }
                                 switch (inject.at()[0].value()) {
                                     case "AFTER":
-                                        method.insertAfter(methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
+                                        method.insertAfter(returnVariable + methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
                                         break;
                                     case "BEFORE":
-                                        method.insertBefore(methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
+                                        method.insertBefore(returnVariable + methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
                                         break;
                                     case "BY":
-                                        method.insertAt(inject.at()[0].by(), methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
+                                        method.insertAt(inject.at()[0].by(), returnVariable + methodName + "(" + joinParameterNames(parameterNames) + ");" + afterMC);
                                         break;
                                 }
-                                EConsole.write(EConsole.MAGENTA + EConsole.BOLD + "[Mixin|Injection] Injected method " + EConsole.RESET + EConsole.MAGENTA + methodName + "(" + joinParameterNames(parameterNames) + "); " + EConsole.RESET + EConsole.MAGENTA + EConsole.BOLD + "to " + EConsole.RESET + EConsole.MAGENTA + cc.getSimpleName() + "()" + EConsole.RESET);
+                                EConsole.write(EConsole.MAGENTA + EConsole.BOLD + "[Mixin|Injection] Injected method " + EConsole.RESET + EConsole.MAGENTA + returnVariable + methodName + "(" + joinParameterNames(parameterNames) + "); " + EConsole.RESET + EConsole.MAGENTA + EConsole.BOLD + "to " + EConsole.RESET + EConsole.MAGENTA + cc.getSimpleName() + "()" + EConsole.RESET);
                                 EConsole.write("");
                             }
                             moded = true;

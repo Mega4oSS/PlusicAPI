@@ -13,28 +13,16 @@ public @interface Inject {
 
     public String[] method() default {};
     public Class<?>[] constructorParameters() default {};
-
-    public Desc[] target() default {};
-
-    public Slice[] slice() default {};
-
+    public Class<?>[] methodParameters() default {};
     public At[] at();
-
+    public ReturnTo returnTo() default @ReturnTo(to = "");
     public boolean cancellable() default false;
-
     public LocalCapture locals() default LocalCapture.NO_CAPTURE;
-
     public boolean remap() default true;
-
     public int require() default -1;
-
     public int expect() default 1;
-
     public int allow() default -1;
-
     public String constraints() default "";
-
     public int order() default 1000;
-
     AfterCall afterCall() default AfterCall.NONE;
 }

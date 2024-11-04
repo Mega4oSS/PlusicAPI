@@ -25,6 +25,7 @@ public class PlusicAPI {
         mixins = new ArrayList<>();
         clazzez = new ArrayList<>();
         modPaths = new ArrayList<>();
+        mods = new ArrayList<>();
         loadModsFromRoot();
         loadModsFromWorkshop();
         for (PlusicMod mod : mods) {
@@ -46,7 +47,6 @@ public class PlusicAPI {
     }
 
     public static void loadModsFromRoot() {
-        mods = new ArrayList<>();
         File modsDir = new File("mods");
 
         String[] directories = modsDir.list((current, name) -> new File(current, name).isDirectory());
@@ -126,7 +126,6 @@ public class PlusicAPI {
     }
 
     public static void loadModsFromWorkshop() {
-        mods = new ArrayList<>();
         //System.out.println("o KURWA: " + Paths.get("").getParent().getParent().getFileName() + File.separator + "workshop" + File.separator + "content" + File.separator + "2772750");
         Path currentPath = Paths.get("").toAbsolutePath();
         // Проверка наличия родительских директорий
