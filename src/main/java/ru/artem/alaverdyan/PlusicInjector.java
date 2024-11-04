@@ -52,14 +52,14 @@ public class PlusicInjector {
         String modifiedJarPath = "modifiedfile.jar"; // путь к модифицированному JAR файлу
 
         try {
-            EConsole.writeDefault(EConsole.RED_BG, EConsole.RED + EConsole.BOLD, PlusicAPI.repeatChar('#', logo[0].length()));
+            EConsole.write(EConsole.RED_BG, EConsole.RED + EConsole.BOLD, PlusicAPI.repeatChar('#', logo[0].length()));
             for (String s : logo) {
-                EConsole.writeDefault(EConsole.RED, s);
+                EConsole.write(EConsole.RED, s);
             }
-            EConsole.writeDefault(EConsole.RED_BG, EConsole.RED + EConsole.BOLD, PlusicAPI.repeatChar('#', logo[0].length()));
-            EConsole.writeDefault(EConsole.RED, "Version: 1.0.0");
-            EConsole.writeDefault(EConsole.RED, "By Artem Alaverdyan aka Mega4oSS");
-            EConsole.writeDefault("");
+            EConsole.write(EConsole.RED_BG, EConsole.RED + EConsole.BOLD, PlusicAPI.repeatChar('#', logo[0].length()));
+            EConsole.write(EConsole.RED, "Version: 1.0.0");
+            EConsole.write(EConsole.RED, "By Artem Alaverdyan aka Mega4oSS");
+            EConsole.write("");
 
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracting: " + jarPath);
             extractJar(jarPath, outputDir);
