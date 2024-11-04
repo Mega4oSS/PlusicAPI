@@ -2,7 +2,14 @@ package ru.artem.alaverdyan.utilities;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EConsole {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EConsole.class);
+
+    
     // ANSI-коды для цветов и атрибутов
     public static final String RESET = "\u001B[0m";
     public static final String BLACK = "\u001B[30m";
