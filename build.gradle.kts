@@ -19,7 +19,7 @@ dependencies {
         include("*.jar")
     })
     implementation("com.thoughtworks.paranamer:paranamer:2.8")
-
+    implementation("ch.qos.logback:logback-classic:1.4.7")
 }
 
 tasks.test {
