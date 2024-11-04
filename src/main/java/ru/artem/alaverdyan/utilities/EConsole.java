@@ -2,7 +2,14 @@ package ru.artem.alaverdyan.utilities;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EConsole {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EConsole.class);
+
+    
     // ANSI-коды для цветов и атрибутов
     public static final String RESET = "\u001B[0m";
     public static final String BLACK = "\u001B[30m";
@@ -31,53 +38,78 @@ public class EConsole {
         System.out.println(text);
     }
 
-    public static void write(String color, String text) {
+    public static void writeDefault(String text) {
+        LOGGER.info(text);
+    }
+
+
+    public static void writeDefault(String color, String text) {
         System.out.println(color + text + RESET);
+    }
+    public static void write(String color, String text) {
+        LOGGER.info(color + text + RESET);
     }
 
     public static void write(ArrayList<String> color, ArrayList<String> text) {
+        if (color.size() != text.size()) {
+            throw new IllegalArgumentException("Количество цветов должно совпадать с количеством сообщений.");
+        }
+
         for (int i = 0; i < text.size(); i++) {
-            System.out.println(color.get(i) + text.get(i).replaceAll("%cR", RESET) + RESET);
+            LOGGER.info(color.get(i) + text.get(i) + RESET);
         }
     }
 
     public static void write(ArrayList<String> bgColor, ArrayList<String> color, ArrayList<String> text) {
+        if (bgColor.size() != text.size() || color.size() != text.size()) {
+            throw new IllegalArgumentException("Количество цветов и фонов должно совпадать с количеством сообщений.");
+        }
+
         for (int i = 0; i < text.size(); i++) {
-            System.out.println(bgColor.get(i) + color.get(i) + text.get(i).replaceAll("%cR", RESET) + RESET);
+            LOGGER.info(bgColor.get(i) + color.get(i) + text.get(i) + RESET);
         }
     }
 
     public static void write(String bgColor, String color, String text) {
-        System.out.println(bgColor + color + text + RESET);
+        LOGGER.info(bgColor + color + text + RESET);
     }
 
     public static void write(ArrayList<String> color, String text) {
         for (int i = 0; i < color.size(); i++) {
-            System.out.println(text.replaceAll("%c" + i, color.get(i)).replaceAll("%cR", RESET) + RESET);
+            LOGGER.info(text.replaceAll("%c" + i, color.get(i)) + RESET);
         }
     }
 
     public static void write(ArrayList<String> bgColor, ArrayList<String> color, String text) {
         for (int i = 0; i < color.size(); i++) {
-            System.out.println(text.replaceAll("%c" + i, color.get(i)).replaceAll("%bgC" + i, bgColor.get(i)).replaceAll("%cR", RESET) + RESET);
+            LOGGER.info(text.replaceAll("%c" + i, color.get(i))
+                    .replaceAll("%bgC" + i, bgColor.get(i)) + RESET);
         }
+    }
+
+    public static void writeDefault(ArrayList<String> color, String text) {
+        for (int i = 0; i < color.size(); i++) {
+            System.out.println(text.replaceAll("%c" + i, color.get(i)).replaceAll("%cR", RESET) + RESET);
+        }
+    }
+
+    public static void writeDefault(String bgColor, String color, String text) {
+        System.out.println(bgColor + color + text + RESET);
     }
 
 
     public static void writeGradient(String text, ArrayList<String> colors) {
         for (int i = 0; i < text.length(); i++) {
-            // Вычисляем индекс цвета, используя модуль для плавного перехода
             String color = colors.get(i % colors.size());
-            System.out.print(color + text.charAt(i));
+            LOGGER.info(color + text.charAt(i));
         }
-        System.out.println(RESET); // Сбрасываем цвет после завершения строки
+        LOGGER.info(RESET); // Сбрасываем цвет после завершения строки
     }
 
     public static void writeStacktrace(Throwable cause, String localizedMsg, StackTraceElement[] stackTrace) {
-        System.out.println(RED_BG + BLACK + localizedMsg + RESET);
-        System.out.println(RED_BG + BLACK + cause + RESET);
-        for (int i = 0; i < stackTrace.length; i++) {
-            System.out.println(RED_BG + BLACK + stackTrace[i].toString() + RESET);
+        LOGGER.error(localizedMsg, cause);
+        for (StackTraceElement element : stackTrace) {
+            LOGGER.error(element.toString());
         }
     }
 }
