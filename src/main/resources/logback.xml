@@ -29,7 +29,7 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <root level="TRACE">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="LATEST_LOG_FILE" />
         <appender-ref ref="DATED_LOG_FILE" />
