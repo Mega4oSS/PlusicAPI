@@ -8,6 +8,10 @@ import ru.artem.alaverdyan.injections.DirectInject;
 import ru.artem.alaverdyan.injections.Inject;
 import ru.artem.alaverdyan.utilities.EConsole;
 
+
+import org.fusesource.jansi.Ansi.*;
+import org.fusesource.jansi.AnsiConsole;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +26,7 @@ public class PlusicInjector {
     public static ArrayList<RegClazz> newClazzez;
 
     public static void main(String[] args) {
+
         String[] logo = new String[5];
         logo[0] = " ▄▄▄·▄▄▌  ▄• ▄▌.▄▄ · ▀   ▄▄·      ▄▄▄·  ▄▄▄·▀  ";
         logo[1] = "▐█ ▄███•  █•██▌▐█ ▀. ██ ▐█ ▌•    ▐█ ▀█ ▐█ ▄███ ";
@@ -30,6 +35,8 @@ public class PlusicInjector {
         logo[4] = ".▀   .▀▀▀  ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀      ▀  ▀ .▀   ▀▀▀";
 
         String jarPath;
+
+
         if (args.length >= 2 && args[0].equals("-game")) {
             File file = new File(args[1]);
             if (!file.exists()) {
@@ -48,7 +55,6 @@ public class PlusicInjector {
             }
         }
 
-        EConsole.enableAnsi();
 
         String outputDir = "output_classes";  // Директория для извлеченных классов
         String modifiedJarPath = "modifiedfile.jar"; // путь к модифицированному JAR файлу
