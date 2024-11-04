@@ -48,6 +48,8 @@ public class PlusicInjector {
             }
         }
 
+        EConsole.enableAnsi();
+
         String outputDir = "output_classes";  // Директория для извлеченных классов
         String modifiedJarPath = "modifiedfile.jar"; // путь к модифицированному JAR файлу
 

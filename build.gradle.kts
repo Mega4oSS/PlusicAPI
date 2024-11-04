@@ -20,6 +20,9 @@ dependencies {
     })
     implementation("com.thoughtworks.paranamer:paranamer:2.8")
     implementation("ch.qos.logback:logback-classic:1.4.7")
+    implementation("net.java.dev.jna:jna:5.13.0")
+    implementation("net.java.dev.jna:jna-platform:5.13.0")
+
 }
 
 tasks.test {
@@ -37,6 +40,7 @@ tasks.withType(Jar::class) {
         attributes["Can-Retransform-Classes"] = true;
         attributes["Can-Redefine-Classes"] = true;
     }
+
 }
 
 tasks.withType<JavaCompile> { options.compilerArgs.add("-parameters") }
