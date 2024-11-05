@@ -105,7 +105,7 @@ public class EConsole {
 
     public static void write(String text) {
         AnsiConsole.systemInstall();
-        System.out.println(text);
+        System.out.println(convert(text));
         AnsiConsole.systemUninstall();
 
     }
