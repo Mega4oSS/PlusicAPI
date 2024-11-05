@@ -21,7 +21,10 @@ public class PlusicAPI {
     public static ArrayList<Class<?>> mixins;
     public static ArrayList<RegClazz> clazzez;
 
+
+
     public static void preInit() {
+        EConsole.initializeColorCodes();
         mixins = new ArrayList<>();
         clazzez = new ArrayList<>();
         modPaths = new ArrayList<>();
