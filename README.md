@@ -24,7 +24,7 @@
 
 ## HOW TO CREATE MOD
 
-#### To create mod first check the [example](https://github.com/Mega4oSS/PlusicTestMod/)
+#### To create mod first check the [example]([https://github.com/Mega4oSS/PlusicTestMod/](https://github.com/Mega4oSS/Age-of-history-III-FullscreenBorderless))
 
 #### And clone repository to any folder, then open project in Intellij idea/Eclipse
 
