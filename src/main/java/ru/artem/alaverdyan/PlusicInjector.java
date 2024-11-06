@@ -9,21 +9,24 @@ import ru.artem.alaverdyan.injections.Inject;
 import ru.artem.alaverdyan.utilities.EConsole;
 
 
-import org.fusesource.jansi.Ansi.*;
-import org.fusesource.jansi.AnsiConsole;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.io.FileWriter;
+import java.nio.file.Paths;
+
 
 public class PlusicInjector {
     public static Map<String, ArrayList<Class<?>>> mixins;
     public static ArrayList<RegClazz> newClazzez;
+
+    public static String Version = "1.0.1.d";
 
     public static void main(String[] args) {
 
@@ -35,7 +38,6 @@ public class PlusicInjector {
         logo[4] = ".▀   .▀▀▀  ▀▀▀  ▀▀▀▀ ▀▀▀·▀▀▀      ▀  ▀ .▀   ▀▀▀";
 
         String jarPath;
-
 
         if (args.length >= 2 && args[0].equals("-game")) {
             File file = new File(args[1]);
@@ -56,56 +58,102 @@ public class PlusicInjector {
         }
 
 
-        String outputDir = "output_classes";  // Директория для извлеченных классов
-        String modifiedJarPath = "modifiedfile.jar"; // путь к модифицированному JAR файлу
+        String outputDir = ".plusicapi/output_classes";  // Директория для извлеченных классов
+        String mainDir = ".plusicapi"; // Путь к папке PlusicAPI
+        String modifiedJarPath = ".plusicapi/modifiedfile.jar"; // путь к модифицированному JAR файлу
+        String infoFilePath = ".plusicapi/info.txt"; // путь к файлу с информацией о версии
 
         try {
             EConsole.write(EConsole.RED_BG, EConsole.RED + EConsole.BOLD, PlusicAPI.repeatChar('#', logo[0].length()));
             for (String s : logo) {
                 EConsole.write(EConsole.RED, s);
             }
+
             EConsole.write(EConsole.RED_BG, EConsole.RED + EConsole.BOLD, PlusicAPI.repeatChar('#', logo[0].length()));
-            EConsole.write(EConsole.RED, "Version: 1.0.0");
-            EConsole.write(EConsole.RED, "By Artem Alaverdyan aka Mega4oSS");
+            EConsole.write(EConsole.RED, "[INFO] Version: " + Version);
+            EConsole.write(EConsole.RED, "[INFO] By Artem Alaverdyan aka Mega4oSS");
             EConsole.write("");
-            File dir = new File(outputDir);
-            if (dir.exists()) {
-                deleteDir(dir);
+            File dir = new File(mainDir);
+            if (!dir.exists() && !dir.mkdirs()) {
+                System.out.println("Error create folder: " + mainDir);
+                return;
             }
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracting: " + jarPath);
-            extractJar(jarPath, outputDir);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracted to: " + outputDir);
+            File info = new File(infoFilePath);
+            boolean created = false;
+            try {
+                created = info.createNewFile();
+            } catch (IOException e) {
+                System.err.println("Error create file: " + infoFilePath);
+                e.printStackTrace();
+            }
 
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Pre-Initialization Plusic API");
-            PlusicAPI.preInit();
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Plusic API Pre-Initialized");
+            if (created) {
+                try (FileWriter writer = new FileWriter(infoFilePath)) {
+                    writer.write("Version: " + Version);
+                } catch (IOException e) {
+                    System.err.println("Error write file: " + infoFilePath);
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    List<String> lines = Files.readAllLines(Paths.get(infoFilePath));
+                    if (lines.isEmpty()) {
+                        throw new IOException();
+                    }
+                    String fileContent = lines.get(0).trim();
 
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Processing mixins");
-            mixins = MixinProcessor.processMixins(PlusicAPI.mixins);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins proceeded");
+                    if (fileContent.startsWith("Version: ") && fileContent.substring(9).equals(Version)) {
+                        EConsole.write(EConsole.MAGENTA, "[PlusicInjector] The version is match");
+                    } else {
+                        EConsole.write(EConsole.RED, "[PlusicInjector] The version does not match.");
+                        try (FileWriter writer = new FileWriter(infoFilePath)) {
+                            writer.write("Version: " + Version);
+                        } catch (IOException e) {
+                            System.err.println("Error write file: " + infoFilePath);
+                            e.printStackTrace();
+                        }
+                        EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracting: " + jarPath);
+                        extractJar(jarPath, outputDir);
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracted to: " + outputDir);
 
-            newClazzez = new ArrayList<>();
-            newClazzez.add(new RegClazz(PlusicAPI.class, null));
-            newClazzez.add(new RegClazz(EConsole.class, null));
-            newClazzez.add(new RegClazz(PlusicMod.class, null));
-            newClazzez.add(new RegClazz(RegClazz.class, null));
-            newClazzez.addAll(PlusicAPI.clazzez);
-            newClazzez.add(new RegClazz(ClickAnimationPAPIT.class, null));
-            newClazzez.add(new RegClazz(PlusicAPIText.class, null));
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration log4j library...");
-            extractLib(outputDir);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration classes...");
-            saveClassesToFiles(newClazzez, outputDir);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Classes registered");
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Pre-Initialization Plusic API");
+                        PlusicAPI.preInit();
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Plusic API Pre-Initialized");
 
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Injections mixins");
-            modifyClasses(outputDir, jarPath);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins injected");
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Processing mixins");
+                        mixins = MixinProcessor.processMixins(PlusicAPI.mixins);
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins proceeded");
 
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiling game");
-            createJar(outputDir, modifiedJarPath);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiled " + outputDir + ";" + modifiedJarPath);
-            deleteDir(new File(outputDir));
+                        newClazzez = new ArrayList<>();
+                        newClazzez.add(new RegClazz(PlusicAPI.class, null));
+                        newClazzez.add(new RegClazz(EConsole.class, null));
+                        newClazzez.add(new RegClazz(PlusicMod.class, null));
+                        newClazzez.add(new RegClazz(RegClazz.class, null));
+                        newClazzez.addAll(PlusicAPI.clazzez);
+                        newClazzez.add(new RegClazz(ClickAnimationPAPIT.class, null));
+                        newClazzez.add(new RegClazz(PlusicAPIText.class, null));
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration log4j library...");
+                        extractLib(outputDir);
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration classes...");
+                        saveClassesToFiles(newClazzez, outputDir);
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Classes registered");
+
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Injections mixins");
+                        modifyClasses(outputDir, jarPath);
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins injected");
+
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiling game");
+                        createJar(outputDir, modifiedJarPath);
+                        EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiled " + outputDir + ";" + modifiedJarPath);
+                        deleteDir(new File(outputDir));
+                    }
+                } catch (IOException | IndexOutOfBoundsException e) {
+                    EConsole.write(EConsole.YELLOW, "[PlusicInjector] Error updating files: " + e.getMessage());
+                }
+            }
+
+
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Starting game");
             runJar(modifiedJarPath);
         } catch (Exception e) {
