@@ -8,7 +8,6 @@ import org.fusesource.jansi.Ansi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.fusesource.jansi.Ansi.*;
 import org.fusesource.jansi.AnsiConsole;
 
 import static org.fusesource.jansi.Ansi.ansi;
@@ -44,6 +43,9 @@ public class EConsole {
 
     // Жирный текст
     public static final String BOLD = "\u001B[1m";
+
+    public static final int PROGRESS_BAR_LENGTH = 50;
+
 
 
     public static void initializeColorCodes() {
@@ -101,6 +103,21 @@ public class EConsole {
         }
 
         return ansiOutput.toString();
+    }
+
+    public static void printProgressBar(int percent) {
+        System.out.print("\r[");
+
+        for (int i = 0; i < PROGRESS_BAR_LENGTH; ++i) {
+            if (i < (percent * PROGRESS_BAR_LENGTH / 100)) {
+                System.out.print("█");
+            } else {
+                System.out.print(" ");
+            }
+        }
+
+        System.out.print("] " + percent + "%");
+        System.out.flush();
     }
 
     public static void write(String text) {
