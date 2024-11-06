@@ -10,11 +10,15 @@ import ru.artem.alaverdyan.utilities.EConsole;
 
 
 import java.io.BufferedWriter;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +31,7 @@ public class PlusicInjector {
     public static ArrayList<RegClazz> newClazzez;
 
     public static String Version = "1.0.1.d";
+
 
     static String outputDir = ".plusicapi/output_classes";  // Директория для извлеченных классов
     static String mainDir = ".plusicapi"; // Путь к папке PlusicAPI
@@ -87,7 +92,16 @@ public class PlusicInjector {
                 e.printStackTrace();
             }
 
-            if (created) {
+            if (created || !info.exists()) {
+                try (FileWriter writer = new FileWriter(infoFilePath)) {
+                    writer.write("Version: " + Version);
+                } catch (IOException e) {
+                    System.err.println("Error write file: " + infoFilePath);
+                    e.printStackTrace();
+                }
+                EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
+                updateFiles();
+            } else {
                 try {
                     List<String> lines = Files.readAllLines(Paths.get(infoFilePath));
                     if (lines.isEmpty()) {
@@ -100,22 +114,24 @@ public class PlusicInjector {
                         }
                         EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
                         updateFiles();
-                    }
-                    String fileContent = lines.get(0).trim();
-
-                    if (fileContent.startsWith("Version: ") && fileContent.substring(9).equals(Version)) {
-                        EConsole.write(EConsole.MAGENTA, "[PlusicInjector] The version is match");
                     } else {
-                        EConsole.write(EConsole.RED, "[PlusicInjector] The version does not match.");
-                        try (FileWriter writer = new FileWriter(infoFilePath)) {
-                            writer.write("Version: " + Version);
-                        } catch (IOException e) {
-                            System.err.println("Error write file: " + infoFilePath);
-                            e.printStackTrace();
+                        String fileContent = lines.get(0).trim();
+
+                        if (fileContent.startsWith("Version: ") && fileContent.substring(9).equals(Version)) {
+                            EConsole.write(EConsole.MAGENTA, "[PlusicInjector] The version is match");
+                        } else {
+                            EConsole.write(EConsole.RED, "[PlusicInjector] The version does not match.");
+                            try (FileWriter writer = new FileWriter(infoFilePath)) {
+                                writer.write("Version: " + Version);
+                            } catch (IOException e) {
+                                System.err.println("Error write file: " + infoFilePath);
+                                e.printStackTrace();
+                            }
+                            EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
+                            updateFiles();
                         }
-                        EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
-                        updateFiles();
                     }
+
                 } catch (IOException | IndexOutOfBoundsException e) {
                     EConsole.write(EConsole.YELLOW, "[PlusicInjector] Error updating files: " + e.getMessage());
                 }
@@ -133,9 +149,9 @@ public class PlusicInjector {
     private static void updateFiles() {
         try {
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracting: " + jarPath);
+
             extractJar(jarPath, outputDir);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracted to: " + outputDir);
-
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Pre-Initialization Plusic API");
             PlusicAPI.preInit();
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Plusic API Pre-Initialized");
@@ -223,7 +239,14 @@ public class PlusicInjector {
         }
     }
 
-    private static void extractJar(String jarPath, String outputDir) throws IOException {
+
+
+    private static double calculateCurrentPercentage(int progress) {
+        return progress + 1;
+    }
+
+
+    private static void extractJar(String jarPath, String outputDir) throws IOException, InterruptedException {
         // Создание директории для извлечения классов
         boolean created = new File(outputDir).mkdirs();
         ProcessBuilder pb = new ProcessBuilder("jar", "xf", jarPath);
@@ -231,8 +254,23 @@ public class PlusicInjector {
         pb.inheritIO();
         if (created) {
             Process process = pb.start();
+
+            int progress = 0;
+
+            EConsole.write(" ");
+
+            while (process.isAlive()) {
+                TimeUnit.MILLISECONDS.sleep(300); // Ожидание перед следующим обновлением
+                progress++;
+                double currentPercent = calculateCurrentPercentage(progress); // Метод расчета процента выполнения
+                EConsole.printProgressBar((int)(currentPercent)); // Обновляем прогресс-бар
+            }
+
             try {
                 process.waitFor(); // Подождите завершения процесса
+                Thread.sleep(750);
+                EConsole.printProgressBar(100);
+                System.out.println(" ");
             } catch (InterruptedException e) {
                 EConsole.write(EConsole.RED, e.getLocalizedMessage());
                 throw new RuntimeException(e);
