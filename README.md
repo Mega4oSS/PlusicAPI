@@ -16,6 +16,12 @@
 
 - [@Mega4oSS](https://github.com/Mega4oSS) (Artem Alaverdyan)
 
+
+## Documentation
+
+#### Check https://plusicapi.gitbook.io/plusicapi-docs
+
+
 ## Contributing
 
 #### If you want to help in the development of the project, submit  [pull](https://github.com/Mega4oSS/PlusicAPI/pulls) 
