@@ -36,11 +36,13 @@ public class PlusicAPI {
         for (PlusicMod mod : mods) {
             EConsole.write(EConsole.GREEN + EConsole.BOLD + "[PlusicAPI] Pre-Initialization mod: " + EConsole.RESET + EConsole.GREEN + mod.getName() + ":" + mod.getVersion() + EConsole.RESET);
             mod.preInit();
-            for(String libs: mod.libs) {
-                try {
-                    loadLib(mod, libs);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            if(mod.libs != null) {
+                for(String libs: mod.libs) {
+                    try {
+                        loadLib(mod, libs);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
