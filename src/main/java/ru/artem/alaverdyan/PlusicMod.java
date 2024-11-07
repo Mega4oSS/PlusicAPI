@@ -14,6 +14,10 @@ public class PlusicMod {
     public void preInit() {
     }
 
+    public void init() {
+
+    }
+
     public void create() {
     }
 

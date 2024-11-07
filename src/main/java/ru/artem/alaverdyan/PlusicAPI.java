@@ -46,7 +46,10 @@ public class PlusicAPI {
     }
 
     public void init() {
-        loadModsFromRoot();
+        for (PlusicMod mod : mods) {
+            EConsole.write(EConsole.GREEN + EConsole.BOLD + "[PlusicAPI] Initialization mod: " + EConsole.RESET + EConsole.GREEN + mod.getName() + ":" + mod.getVersion() + EConsole.RESET);
+            mod.init();
+        }
     }
 
     public static void loadModsFromRoot() {

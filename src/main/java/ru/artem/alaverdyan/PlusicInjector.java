@@ -32,7 +32,7 @@ public class PlusicInjector {
     public static Map<String, ArrayList<Class<?>>> mixins;
     public static ArrayList<RegClazz> newClazzez;
 
-    public static String Version = "1.0.1.d";
+    public static String Version = "1.0.2.d";
 
 
     static String outputDir = ".plusicapi/output_classes";  // Директория для извлеченных классов
@@ -302,12 +302,19 @@ public class PlusicInjector {
                             } catch (NotFoundException | CannotCompileException e) {
                                 throw new RuntimeException(e);
                             }
-                        }
-                        if (cc.getSimpleName().equals("DesktopLauncher")) {
+                        }else if (cc.getSimpleName().equals("DesktopLauncher")) {
                             try {
                                 CtMethod body = cc.getDeclaredMethod("main");
                                 String code = "ru.artem.alaverdyan.PlusicAPI.preInit();";
                                 body.insertAt(16, code);
+                            } catch (NotFoundException | CannotCompileException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else if(cc.getSimpleName().equals("AA_Game")) {
+                            try {
+                                CtMethod body = cc.getDeclaredMethod("create");
+                                String code = "ru.artem.alaverdyan.PlusicAPI.init();";
+                                body.insertAt(36, code);
                             } catch (NotFoundException | CannotCompileException e) {
                                 throw new RuntimeException(e);
                             }
