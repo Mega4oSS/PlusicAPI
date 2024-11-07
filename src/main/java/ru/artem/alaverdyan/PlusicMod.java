@@ -2,16 +2,20 @@ package ru.artem.alaverdyan;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.ArrayList;
+
 public class PlusicMod {
     private String name;
     private String author;
     private String version;
     private String root;
+    public ArrayList<String> libs;
 
     public PlusicMod() {
     }
 
     public void preInit() {
+        libs = new ArrayList<String>();
     }
 
     public void init() {
@@ -59,11 +63,7 @@ public class PlusicMod {
         this.root = root;
     }
 
-    //public ArrayList<Mixin> getMixins() {
-        //    return mixins;
-        //}
-    //
-            //public void setMixins(ArrayList<Mixin> mixins) {
-        //    this.mixins = mixins;
-        //}
+    public void addLib(String libPath) {
+        this.libs.add(libPath);
+    }
 }

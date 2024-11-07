@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.artem.alaverdyan.PlusicInjector.outputDir;
+
 @SuppressWarnings("deprecation")
 public class PlusicAPI {
     public static ArrayList<PlusicMod> mods;
@@ -34,6 +36,31 @@ public class PlusicAPI {
         for (PlusicMod mod : mods) {
             EConsole.write(EConsole.GREEN + EConsole.BOLD + "[PlusicAPI] Pre-Initialization mod: " + EConsole.RESET + EConsole.GREEN + mod.getName() + ":" + mod.getVersion() + EConsole.RESET);
             mod.preInit();
+            for(String libs: mod.libs) {
+                try {
+                    loadLib(mod, libs);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    public static void loadLib(PlusicMod mod, String libPath) throws IOException {
+        boolean created = new File(outputDir).mkdirs();
+        ProcessBuilder pb = new ProcessBuilder("jar", "xf", mod.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "), libPath);
+        pb.directory(new File(outputDir));
+        pb.inheritIO();
+        if (created || new File(outputDir).exists()) {
+            Process process = pb.start();
+            try {
+                process.waitFor(); // Подождите завершения процесса
+            } catch (InterruptedException e) {
+                EConsole.write(EConsole.RED, e.getLocalizedMessage());
+                throw new RuntimeException(e);
+            }
+        } else {
+            EConsole.write(EConsole.RED, "[ERROR] Output directory not created, check permissions or idk.");
         }
     }
 

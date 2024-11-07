@@ -27,7 +27,7 @@ public class PlusicInjector {
     public static Map<String, ArrayList<Class<?>>> mixins;
     public static ArrayList<RegClazz> newClazzez;
 
-    public static String Version = "1.0.2.d";
+    public static String Version = "1.0.3.d";
 
 
     static String outputDir = ".plusicapi/output_classes";  // Директория для извлеченных классов
@@ -133,8 +133,6 @@ public class PlusicInjector {
                     EConsole.write(EConsole.YELLOW, "[PlusicInjector] Error updating files: " + e.getMessage());
                 }
             }
-
-
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Starting game");
             runJar(modifiedJarPath);
         } catch (Exception e) {
