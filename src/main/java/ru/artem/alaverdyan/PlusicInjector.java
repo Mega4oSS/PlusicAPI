@@ -9,21 +9,23 @@ import ru.artem.alaverdyan.injections.Inject;
 import ru.artem.alaverdyan.utilities.EConsole;
 
 
-import java.io.BufferedWriter;
+import java.io.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.net.URL;
+import java.nio.file.*;
+
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.io.FileWriter;
-import java.nio.file.Paths;
 
 
 public class PlusicInjector {
@@ -177,7 +179,6 @@ public class PlusicInjector {
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Injections mixins");
             modifyClasses(outputDir, jarPath);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins injected");
-
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiling game");
             createJar(outputDir, modifiedJarPath);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiled " + outputDir + ";" + modifiedJarPath);
@@ -501,7 +502,7 @@ public class PlusicInjector {
     }
 
     private static void runJar(String modifiedJarPath) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("java", "-jar", modifiedJarPath);
+        ProcessBuilder pb = new ProcessBuilder("java", "-Xms2048M","-Xmx2048M","-XX:+UseG1GC","-XX:+ParallelRefProcEnabled","-XX:MaxGCPauseMillis=200","-XX:+UnlockExperimentalVMOptions","-XX:+DisableExplicitGC","-XX:+AlwaysPreTouch", "-XX:G1NewSizePercent=30","-XX:G1MaxNewSizePercent=40","-XX:G1HeapRegionSize=8M","-XX:G1ReservePercent=20","-XX:G1HeapWastePercent=5","-XX:G1MixedGCCountTarget=4","-XX:InitiatingHeapOccupancyPercent=15","-XX:G1MixedGCLiveThresholdPercent=90","-XX:G1RSetUpdatingPauseTimePercent=5","-XX:SurvivorRatio=32","-XX:+PerfDisableSharedMem", "-XX:MaxTenuringThreshold=1", "-jar", modifiedJarPath);
         pb.inheritIO();
         pb.start();
     }
