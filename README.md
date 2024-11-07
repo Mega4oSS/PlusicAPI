@@ -3,7 +3,7 @@
 
 # 
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=⭐+PlusicAPI+-+Enhance+your+game+..&size=30&color=red)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=⭐+PlusicAPI+-+Enhance+your+game.&size=30&width=650)](https://git.io/typing-svg)
 
 # 
 PlusicAPI is a pre-release tool designed to enhance your Age of History III (Age of Civilization III) experience by enabling code editing and mod compatibility. Currently, it features partial Mixin implementation, allowing you to insert your own code into the game.
