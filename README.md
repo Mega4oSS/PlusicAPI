@@ -9,7 +9,7 @@
 
 # ⭐ PlusicAPI - Enhance your game.
 
-##### PlusicAPI is a pre-release tool designed to enhance your Age of History III (Age of Civilization III) experience by enabling code editing and mod compatibility. Currently, it features partial Mixin implementation, allowing you to insert your own code into the game.
+PlusicAPI is a pre-release tool designed to enhance your Age of History III (Age of Civilization III) experience by enabling code editing and mod compatibility. Currently, it features partial Mixin implementation, allowing you to insert your own code into the game.
 
 
 ## 💻 Authors
@@ -19,23 +19,24 @@
 
 ## 📖 Documentation
 
-#### [Please check](https://plusicapi.gitbook.io/plusicapi-docs)
+[Please check](https://plusicapi.gitbook.io/plusicapi-docs)
 
 
 ## ☯ Contributing
 
-##### If you want to help in the development of the project, submit  [pull](https://github.com/Mega4oSS/PlusicAPI/pulls) 
+If you want to help in the development of the project, submit  [pull](https://github.com/Mega4oSS/PlusicAPI/pulls)
 
-#### If you find a bug, open a new one [Issues](https://github.com/Mega4oSS/PlusicAPI/issues)
-##### Special thanks for:
+If you find a bug, open a new one [Issues](https://github.com/Mega4oSS/PlusicAPI/issues)
+
+### Special thanks for:
 - [Frosty3132](https://github.com/frosty3132) (Create README.md)
 - [Ya Uu](https://vk.com/id699391643) (Founded a critical bug)
 
 ## ➕ HOW TO CREATE MOD
 
-##### To create mod first check the [Example](https://github.com/Mega4oSS/Age-of-history-III-FullscreenBorderless)
+To create mod first check the [Example](https://github.com/Mega4oSS/Age-of-history-III-FullscreenBorderless)
 
-##### And clone repository to any folder, then open project in Intellij idea/Eclipse
+And clone repository to any folder, then open project in Intellij idea/Eclipse
 
 ## 🔰 License
 
