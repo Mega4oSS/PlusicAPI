@@ -17,11 +17,6 @@ import java.nio.file.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
-
 
 import java.util.List;
 import java.util.Locale;
@@ -314,7 +309,7 @@ public class PlusicInjector {
                             try {
                                 CtMethod body = cc.getDeclaredMethod("create");
                                 String code = "ru.artem.alaverdyan.PlusicAPI.init();";
-                                body.insertAt(36, code);
+                                body.insertAfter(code);
                             } catch (NotFoundException | CannotCompileException e) {
                                 throw new RuntimeException(e);
                             }
