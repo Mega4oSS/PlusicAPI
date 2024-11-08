@@ -9,13 +9,12 @@ public class PlusicMod {
     private String author;
     private String version;
     private String root;
-    public ArrayList<String> libs;
 
     public PlusicMod() {
     }
 
     public void preInit() {
-        libs = new ArrayList<String>();
+
     }
 
     public void init() {
@@ -63,7 +62,5 @@ public class PlusicMod {
         this.root = root;
     }
 
-    public void addLib(String libPath) {
-        this.libs.add(libPath);
-    }
+
 }

@@ -150,7 +150,7 @@ public class PlusicInjector {
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Pre-Initialization Plusic API");
             PlusicAPI.preInit();
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Plusic API Pre-Initialized");
-
+            initLibs();
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Processing mixins");
             mixins = MixinProcessor.processMixins(PlusicAPI.mixins);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins proceeded");
@@ -160,6 +160,7 @@ public class PlusicInjector {
             newClazzez.add(new RegClazz(EConsole.class, null));
             newClazzez.add(new RegClazz(PlusicMod.class, null));
             newClazzez.add(new RegClazz(RegClazz.class, null));
+            newClazzez.add(new RegClazz(RegLib.class, null));
             newClazzez.addAll(PlusicAPI.clazzez);
             newClazzez.add(new RegClazz(ClickAnimationPAPIT.class, null));
             newClazzez.add(new RegClazz(PlusicAPIText.class, null));
@@ -181,6 +182,25 @@ public class PlusicInjector {
         }
     }
 
+    public static void initLibs() throws IOException {
+        for(RegLib lib : PlusicAPI.libs ) {
+            boolean created = new File(outputDir).mkdirs();
+            ProcessBuilder pb = new ProcessBuilder("jar", "xf", lib.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "), lib.libPath);
+            pb.directory(new File(outputDir));
+            pb.inheritIO();
+            if (created || new File(outputDir).exists()) {
+                Process process = pb.start();
+                try {
+                    process.waitFor(); // Подождите завершения процесса
+                } catch (InterruptedException e) {
+                    EConsole.write(EConsole.RED, e.getLocalizedMessage());
+                    throw new RuntimeException(e);
+                }
+            } else {
+                EConsole.write(EConsole.RED, "[ERROR] Output directory not created, check permissions or idk.");
+            }
+        }
+    }
 
     private static void extractLib(String outputDir) throws IOException {
         // Создание директории для извлечения классов

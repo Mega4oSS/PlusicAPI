@@ -22,6 +22,7 @@ public class PlusicAPI {
     public static ArrayList<String> modPaths;
     public static ArrayList<Class<?>> mixins;
     public static ArrayList<RegClazz> clazzez;
+    public static ArrayList<RegLib> libs = new ArrayList<>();
 
 
 
@@ -31,40 +32,20 @@ public class PlusicAPI {
         clazzez = new ArrayList<>();
         modPaths = new ArrayList<>();
         mods = new ArrayList<>();
+        libs = new ArrayList<>();
         loadModsFromRoot();
         loadModsFromWorkshop();
         for (PlusicMod mod : mods) {
             EConsole.write(EConsole.GREEN + EConsole.BOLD + "[PlusicAPI] Pre-Initialization mod: " + EConsole.RESET + EConsole.GREEN + mod.getName() + ":" + mod.getVersion() + EConsole.RESET);
             mod.preInit();
-            if(mod.libs != null) {
-                for(String libs: mod.libs) {
-                    try {
-                        loadLib(mod, libs);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
         }
     }
 
-    public static void loadLib(PlusicMod mod, String libPath) throws IOException {
-        boolean created = new File(outputDir).mkdirs();
-        ProcessBuilder pb = new ProcessBuilder("jar", "xf", mod.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "), libPath);
-        pb.directory(new File(outputDir));
-        pb.inheritIO();
-        if (created || new File(outputDir).exists()) {
-            Process process = pb.start();
-            try {
-                process.waitFor(); // Подождите завершения процесса
-            } catch (InterruptedException e) {
-                EConsole.write(EConsole.RED, e.getLocalizedMessage());
-                throw new RuntimeException(e);
-            }
-        } else {
-            EConsole.write(EConsole.RED, "[ERROR] Output directory not created, check permissions or idk.");
-        }
+    public static void registerLibrary(String libPath, PlusicMod mod) {
+        RegLib lib = new RegLib(libPath, mod);
+        libs.add(lib);
     }
+
 
     public static void registerClass(Class<?> clazz, PlusicMod mod) {
         clazzez.add(new RegClazz(clazz, modPaths.get(mods.indexOf(mod))));
