@@ -2,7 +2,6 @@ package ru.artem.alaverdyan;
 
 import ru.artem.alaverdyan.utilities.EConsole;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -14,15 +13,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.artem.alaverdyan.PlusicInjector.outputDir;
-
 @SuppressWarnings("deprecation")
 public class PlusicAPI {
     public static ArrayList<PlusicMod> mods;
     public static ArrayList<String> modPaths;
     public static ArrayList<Class<?>> mixins;
     public static ArrayList<RegClazz> clazzez;
-    public static ArrayList<RegLib> libs = new ArrayList<>();
+    public static ArrayList<RegLib> libs;
 
 
 
@@ -42,8 +39,7 @@ public class PlusicAPI {
     }
 
     public static void registerLibrary(String libPath, PlusicMod mod) {
-        RegLib lib = new RegLib(libPath, mod);
-        libs.add(lib);
+        libs.add(new RegLib(libPath, mod));
     }
 
 

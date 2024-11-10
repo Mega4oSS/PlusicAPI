@@ -11,7 +11,6 @@ import ru.artem.alaverdyan.utilities.EConsole;
 
 import java.io.*;
 
-import java.net.URL;
 import java.nio.file.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +29,7 @@ public class PlusicInjector {
     public static String Version = "1.0.3.d";
 
 
-    static String outputDir = ".plusicapi/output_classes";  // Директория для извлеченных классов
+    static final String OUTPUT_DIR = ".plusicapi/output_classes";  // Директория для извлеченных классов
     static String mainDir = ".plusicapi"; // Путь к папке PlusicAPI
     static String modifiedJarPath = ".plusicapi/modifiedfile.jar"; // путь к модифицированному JAR файлу
     static String infoFilePath = ".plusicapi/info.txt"; // путь к файлу с информацией о версии
@@ -145,8 +144,8 @@ public class PlusicInjector {
         try {
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracting: " + jarPath);
 
-            extractJar(jarPath, outputDir);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracted to: " + outputDir);
+            extractJar(jarPath, OUTPUT_DIR);
+            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracted to: " + OUTPUT_DIR);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Pre-Initialization Plusic API");
             PlusicAPI.preInit();
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Plusic API Pre-Initialized");
@@ -165,18 +164,18 @@ public class PlusicInjector {
             newClazzez.add(new RegClazz(ClickAnimationPAPIT.class, null));
             newClazzez.add(new RegClazz(PlusicAPIText.class, null));
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration log4j library...");
-            extractLib(outputDir);
+            extractLib(OUTPUT_DIR);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Registration classes...");
-            saveClassesToFiles(newClazzez, outputDir);
+            saveClassesToFiles(newClazzez, OUTPUT_DIR);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Classes registered");
 
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Injections mixins");
-            modifyClasses(outputDir, jarPath);
+            modifyClasses(OUTPUT_DIR, jarPath);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Mixins injected");
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiling game");
-            createJar(outputDir, modifiedJarPath);
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiled " + outputDir + ";" + modifiedJarPath);
-            deleteDir(new File(outputDir));
+            createJar(OUTPUT_DIR, modifiedJarPath);
+            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Recompiled " + OUTPUT_DIR + ";" + modifiedJarPath);
+            deleteDir(new File(OUTPUT_DIR));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -184,12 +183,12 @@ public class PlusicInjector {
 
     public static void initLibs() throws IOException {
         for(RegLib lib : PlusicAPI.libs ) {
-            boolean created = new File(outputDir).mkdirs();
-            ProcessBuilder pb = new ProcessBuilder("jar", "xf", lib.getMod().getRoot() + File.separator + lib.getMod().getName() + "-1.0" + "-SNAPSHOT" + ".jar", lib.libPath);
-            EConsole.write(lib.getMod().getRoot() + File.separator + lib.getMod().getName() + "-1.0" + "-SNAPSHOT-" + ".jar" + " LIB: " + lib.libPath);
-            pb.directory(new File(outputDir));
+            boolean created = new File(OUTPUT_DIR).mkdirs();
+            ProcessBuilder pb = new ProcessBuilder("jar", "xf", PlusicAPI.modPaths.get(PlusicAPI.mods.indexOf(lib.getMod())), lib.libPath);
+            EConsole.write(PlusicAPI.modPaths.get(PlusicAPI.mods.indexOf(lib.getMod())) + " LIB: " + lib.libPath);
+            pb.directory(new File(OUTPUT_DIR));
             pb.inheritIO();
-            if (created || new File(outputDir).exists()) {
+            if (created || new File(OUTPUT_DIR).exists()) {
                 Process process = pb.start();
                 try {
                     process.waitFor(); // Подождите завершения процесса
