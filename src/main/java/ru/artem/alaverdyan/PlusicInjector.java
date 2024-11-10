@@ -185,7 +185,8 @@ public class PlusicInjector {
     public static void initLibs() throws IOException {
         for(RegLib lib : PlusicAPI.libs ) {
             boolean created = new File(outputDir).mkdirs();
-            ProcessBuilder pb = new ProcessBuilder("jar", "xf", lib.getClass().getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " "), lib.libPath);
+            ProcessBuilder pb = new ProcessBuilder("jar", "xf", lib.getMod().getRoot() + File.separator + lib.getMod().getName() + "-1.0" + "-SNAPSHOT" + ".jar", lib.libPath);
+            EConsole.write(lib.getMod().getRoot() + File.separator + lib.getMod().getName() + "-1.0" + "-SNAPSHOT-" + ".jar" + " LIB: " + lib.libPath);
             pb.directory(new File(outputDir));
             pb.inheritIO();
             if (created || new File(outputDir).exists()) {
