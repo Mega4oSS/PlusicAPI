@@ -11,7 +11,7 @@ PlusicAPI is a pre-release tool designed to enhance your Age of History III (Age
 ## 💻 Authors
 
 - [@Mega4oSS](https://github.com/Mega4oSS) (Artem Alaverdyan)
-- [@ArtArss](https://github.com/ArtArss) (Arseny Lebedev)
+- [@llebedev](https://github.com/llebedev) (Arseny Lebedev)
 
 ## 📖 Documentation
 
