@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ public class PlusicInjector {
     static final String OUTPUT_DIR = ".plusicapi/output_classes";  // Директория для извлеченных классов
     static String mainDir = ".plusicapi"; // Путь к папке PlusicAPI
     static String modifiedJarPath = ".plusicapi/modifiedfile.jar"; // путь к модифицированному JAR файлу
-    static String infoFilePath = ".plusicapi/info.txt"; // путь к файлу с информацией о версии
     static String jarPath;
 
     public static void main(String[] args) {
@@ -55,9 +53,9 @@ public class PlusicInjector {
             jarPath = args[1];
         } else {
             // Поиск файла "aoh3" в корне текущей директории
-            jarPath = findFile("aoh3");
+            jarPath = findFile("game");
             if (jarPath == null) {
-                EConsole.write(EConsole.RED_BG, EConsole.BLACK, "[ERROR] Game not found: \"aoh3\"");
+                EConsole.write(EConsole.RED_BG, EConsole.BLACK, "[ERROR] Game not found: \"game\"");
                 EConsole.write(EConsole.RED_BG, EConsole.BLACK, "[ERROR] Exiting...");
                 return;
             }
@@ -79,59 +77,9 @@ public class PlusicInjector {
                 System.out.println("Error create folder: " + mainDir);
                 return;
             }
-            File info = new File(infoFilePath);
-            boolean created = false;
-            try {
-                created = info.createNewFile();
-            } catch (IOException e) {
-                System.err.println("Error create file: " + infoFilePath);
-                e.printStackTrace();
-            }
 
-            if (created || !info.exists()) {
-                try (FileWriter writer = new FileWriter(infoFilePath)) {
-                    writer.write("Version: " + Version);
-                } catch (IOException e) {
-                    System.err.println("Error write file: " + infoFilePath);
-                    e.printStackTrace();
-                }
-                EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
-                updateFiles();
-            } else {
-                try {
-                    List<String> lines = Files.readAllLines(Paths.get(infoFilePath));
-                    if (lines.isEmpty()) {
-                        EConsole.write(EConsole.RED, "[PlusicInjector] The version does not match.");
-                        try (FileWriter writer = new FileWriter(infoFilePath)) {
-                            writer.write("Version: " + Version);
-                        } catch (IOException e) {
-                            System.err.println("Error write file: " + infoFilePath);
-                            e.printStackTrace();
-                        }
-                        EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
-                        updateFiles();
-                    } else {
-                        String fileContent = lines.get(0).trim();
+            updateFiles();
 
-                        if (fileContent.startsWith("Version: ") && fileContent.substring(9).equals(Version)) {
-                            EConsole.write(EConsole.MAGENTA, "[PlusicInjector] The version is match");
-                        } else {
-                            EConsole.write(EConsole.RED, "[PlusicInjector] The version does not match.");
-                            try (FileWriter writer = new FileWriter(infoFilePath)) {
-                                writer.write("Version: " + Version);
-                            } catch (IOException e) {
-                                System.err.println("Error write file: " + infoFilePath);
-                                e.printStackTrace();
-                            }
-                            EConsole.write(EConsole.MAGENTA, "[PlusicInjector] Updating files...");
-                            updateFiles();
-                        }
-                    }
-
-                } catch (IOException | IndexOutOfBoundsException e) {
-                    EConsole.write(EConsole.YELLOW, "[PlusicInjector] Error updating files: " + e.getMessage());
-                }
-            }
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Starting game");
             runJar(modifiedJarPath);
         } catch (Exception e) {
@@ -140,15 +88,64 @@ public class PlusicInjector {
 
     }
 
+    private static void updateVC(ArrayList<PlusicMod> mods) {
+        File file = new File(mainDir, "info.vc");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (int i = 0; i < mods.size(); i++) {
+                writer.write(mods.get(i).getName() + ";" + mods.get(i).getVersion());
+                if (i < mods.size()) {
+                    writer.newLine(); // Переход на новую строку
+                }
+            }
+            System.out.println("VC Updated: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            System.err.println("VC error: " + e.getMessage());
+        }
+    }
+
+    public static boolean compareVC(ArrayList<PlusicMod> mods) {
+        File file = new File(mainDir, "info.vc");
+        ArrayList<String> modsVC = new ArrayList<>();
+        ArrayList<String> modsVCA = new ArrayList<>();
+
+        if(!file.exists()) {
+            return true;
+        }
+        for (int i = 0; i < mods.size(); i++) {
+            modsVCA.add(mods.get(i).getName() + ";" + mods.get(i).getVersion());
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            // Читаем строку за строкой и добавляем в список
+            while ((line = reader.readLine()) != null) {
+                modsVC.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("VC Comparing Error: " + e.getMessage());
+        }
+        System.out.println(modsVCA);
+        System.out.println(modsVC);
+
+        if(modsVCA.equals(modsVC)) {
+            System.out.println("Compared!");
+            return false;
+        } else return true;
+    }
+
     private static void updateFiles() {
         try {
+            PlusicAPI.preInit();
+            if (!compareVC(PlusicAPI.mods)) {
+                return;
+            }
+            updateVC(PlusicAPI.mods);
+            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Plusic API Pre-Initialized");
+
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracting: " + jarPath);
 
             extractJar(jarPath, OUTPUT_DIR);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Extracted to: " + OUTPUT_DIR);
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Pre-Initialization Plusic API");
-            PlusicAPI.preInit();
-            EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Plusic API Pre-Initialized");
             initLibs();
             EConsole.write(EConsole.WHITE_BG, EConsole.BLACK, "[PlusicInjector] Processing mixins");
             mixins = MixinProcessor.processMixins(PlusicAPI.mixins);
@@ -300,7 +297,7 @@ public class PlusicInjector {
         // Проходим по всем классам и модифицируем их
         //noinspection resource
         Files.walk(new File(outputDir).toPath())
-                .filter(path -> path.toString().endsWith(".class") && path.toString().contains("output_classes\\aoc\\kingdoms\\"))
+                .filter(path -> path.toString().endsWith(".class") && path.toString().contains("output_classes\\aoh\\kingdoms\\history\\"))
                 .forEach(path -> {
                     try {
                         CtClass cc = pool.makeClass(Files.newInputStream(path));
@@ -505,7 +502,7 @@ public class PlusicInjector {
         try (BufferedWriter writer = Files.newBufferedWriter(manifestFile.toPath())) {
             writer.write("Manifest-Version: 1.0");
             writer.newLine();
-            writer.write("Main-Class: aoc.kingdoms.lukasz.jakowski.desktop.DesktopLauncher");
+            writer.write("Main-Class: aoh.kingdoms.history.mainGame.desktop.DesktopLauncher");
             writer.newLine();
             writer.newLine(); // Обязательно добавить пустую строку в конце
         }

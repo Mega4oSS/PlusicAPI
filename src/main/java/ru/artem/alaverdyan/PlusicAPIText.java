@@ -1,13 +1,12 @@
 package ru.artem.alaverdyan;
-
-import aoc.kingdoms.lukasz.jakowski.CFG;
-import aoc.kingdoms.lukasz.jakowski.Game_Calendar;
-import aoc.kingdoms.lukasz.menu.Colors;
-import aoc.kingdoms.lukasz.menu.Menu;
-import aoc.kingdoms.lukasz.menu.MenuManager;
-import aoc.kingdoms.lukasz.menu_element.menuElementHover.*;
-import aoc.kingdoms.lukasz.menu_element.textStatic.Text_Static;
-import aoc.kingdoms.lukasz.textures.Images;
+import aoh.kingdoms.history.mainGame.CFG;
+import aoh.kingdoms.history.mainGame.Game_Calendar;
+import aoh.kingdoms.history.menu.Colors;
+import aoh.kingdoms.history.menu.Menu;
+import aoh.kingdoms.history.menu.MenuManager;
+import aoh.kingdoms.history.menu_element.menuElementHover.*;
+import aoh.kingdoms.history.menu_element.textStatic.Text_Static;
+import aoh.kingdoms.history.textures.Images;
 import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;

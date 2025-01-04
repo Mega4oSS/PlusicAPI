@@ -1,7 +1,7 @@
 package ru.artem.alaverdyan;
 
-import aoc.kingdoms.lukasz.map.diplomacy.DiplomacyManager;
-import aoc.kingdoms.lukasz.menu.ClickAnimation;
+import aoh.kingdoms.history.map.diplomacy.DiplomacyManager;
+import aoh.kingdoms.history.menu.ClickAnimation;
 import com.badlogic.gdx.graphics.Color;
 
 public class ClickAnimationPAPIT extends ClickAnimation {
